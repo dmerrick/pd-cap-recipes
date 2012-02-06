@@ -43,4 +43,12 @@ The following sanity check will be performed automatically:
 
 When you deploy, you will prompted for a comment. This will be used to notify your coworkers via email and HipChat. 
 
+### Improved Logging
+
+The entire output produced by capistrano is logged to log/capistrano.log.
+
+### Benchmarking your deploys
+
+There's also a performance report printed at the end of every deploy to help you find slow tasks in your deployments and keep things snappy.
+
 
