@@ -6,6 +6,12 @@ Grit::Git.git_timeout = 600 # seconds
 Grit::Git.git_max_size = 104857600 # 100 megs
 
 Capistrano::Configuration.instance(:must_exist).load do |config|
+  namespace :deploy do
+    desc 'Cut a tag for deployment'
+    task :prepare do
+      git.cut_tag
+    end
+  end
 
   after  'deploy:symlink', 'git:update_tag_for_stage'
 
@@ -52,12 +58,6 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       # Set new pointer to current HEAD.
       git.tag({}, config[:stage])
       git.push(:tags => true)
-    end
-  end
-
-  namespace :deploy do
-    task :prepare do
-      git.cut_tag
     end
   end
 end
