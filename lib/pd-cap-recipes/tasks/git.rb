@@ -54,6 +54,12 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       git.push(:tags => true)
     end
   end
+
+  namespace :deploy do
+    task :prepare do
+      git.cut_tag
+    end
+  end
 end
 
 def git_sanity_check(tag)
