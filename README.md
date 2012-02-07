@@ -39,6 +39,11 @@ The following sanity check will be performed automatically:
 * Validate the master-1328567775 as the latest deploy as an ancestor
 * Validate that you have indeed checkout that branch before deploying
 
+Another nice thing this recipe does is keep an up to date tag for each environment. So the production tag is what is currently deployed to production. So if you ever need to diff a branch and what is already deploy you can do something like:
+
+    git diff production
+    
+
 ### Deploy Comments
 
 When you deploy, you will prompted for a comment. This will be used to notify your coworkers via email and HipChat. 
