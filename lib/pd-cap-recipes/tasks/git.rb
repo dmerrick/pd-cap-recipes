@@ -29,7 +29,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       git.tag({}, new_tag)
       git.push(:tags => true)
 
-      Capistrano::CLI.ui.say "Your new tag is \e[1m\e[32m#{new_tag}\e[0m" 
+      Capistrano::CLI.ui.say "Your new tag is #{green new_tag}" 
       Capistrano::CLI.ui.say "You can deploy the tag by running:\n  bundle exec cap #{stage} deploy -s tag=#{new_tag}" 
     end
 
@@ -38,7 +38,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
 
       tag = config[:tag]
       if !config[:tag]
-        tag = Capistrano::CLI.ui.ask "\e[1m\e[32mTag to deploy: \e[0m"
+        tag = Capistrano::CLI.ui.ask green("Tag to deploy: ")
         tag = tag.to_s.strip
       end
 
@@ -82,9 +82,22 @@ def git_sanity_check(tag)
   # http://stackoverflow.com/questions/3005392/git-how-can-i-tell-if-one-commit-is-a-descendant-of-another-commit
   if ENV['REVERSE_DEPLOY_OK'].nil?
     if git.merge_base({}, deploy_sha, current_revision).chomp != git.rev_parse({ :verify => true }, current_revision).chomp
-      raise "You are trying to deploy #{deploy_sha}, which does not contain #{current_revision}," + \
-          " the commit currently running.  Operation aborted for your safety." + \
-          " Set REVERSE_DEPLOY_OK to override."
+      unless continue_with_reverse_deploy(deploy_sha)
+        raise "You are trying to deploy #{deploy_sha}, which does not contain #{current_revision}," + \
+            " the commit currently running.  Operation aborted for your safety." + \
+            " Set REVERSE_DEPLOY_OK to override."
+      end
     end
   end
+end
+
+def continue_with_reverse_deploy(deploy_sha)
+  msg = "You are trying to deploy #{deploy_sha}, which does not contain #{current_revision}, the commit currently running. Are you sure you want to continue? #{green "[No|yes]"}"
+  continue = Capistrano::CLI.ui.ask msg
+  continue = continue.to_s.strip
+  continue.downcase == 'yes'
+end
+
+def green(s)
+  "\e[1m\e[32m#{s}\e[0m" 
 end

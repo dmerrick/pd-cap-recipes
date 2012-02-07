@@ -26,7 +26,10 @@ def bluepill_path
 end
 
 def bluepill_started?(hosts)
-  workers = capture("ps ax | grep 'db_queue_worker\s*$' | wc -l ", :hosts => hosts)
+  # Command to check that a process is running. Should be somethink like:
+  # ps ax | grep 'my_worker\s*$' | wc -l 
+  cmd = fetch(:bluepill_started_cmd, 'true')
+  workers = capture(cmd, :hosts => hosts)
   workers.to_i > 0
 end
 
@@ -44,7 +47,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
 
     desc "Load bluepill configuration and start it"
     task :start, :roles => [:bg_task] do
-      bluepill_exec "load #{bluepill_path}", false
+      bluepill_exec "load #{bluepill_path}", :no_error => false
     end
 
     desc "Restart bluepill"

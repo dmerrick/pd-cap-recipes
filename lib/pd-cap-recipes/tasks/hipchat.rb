@@ -1,11 +1,16 @@
 require 'hipchat/capistrano'
 
 Capistrano::Configuration.instance(:must_exist).load do |config|
-  set :hipchat_token, "4e74b95845755f3399091cd564ddde"
-  set :hipchat_room_name do
-    production? ? 'PagerDuty' : 'Engineering'
-  end
-
+  # Set these in you deploy.rb file
+  # set :hipchat_token, "??????????"
+  # set :hipchat_room_name, "My Room"
+  #
+  # or
+  #
+  # set :hipchat_room_name do
+  #   production? ? 'Main Room' : 'Log Room'
+  # end
+  
   set :hipchat_announce do 
     production?
   end
