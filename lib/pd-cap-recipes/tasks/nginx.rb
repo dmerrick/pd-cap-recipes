@@ -12,8 +12,8 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
 
         desc 'Backup nginx config'
         task :backup, :roles => role do
-          run "mkdir -p /u/apps/pagerduty/backups"
-          run "cp /opt/nginx/conf/nginx.conf /u/apps/pagerduty/backups/#{Time.now.strftime("%d%m%Y")}-nginx.conf.bak"
+          run "mkdir -p #{deploy_to}/backups"
+          run "cp /opt/nginx/conf/nginx.conf #{deploy_to}/backups/#{Time.now.strftime("%d%m%Y")}-nginx.conf.bak"
         end
 
         config_path = File.join(File.dirname(__FILE__), "..", "nginx_#{role}.conf")
