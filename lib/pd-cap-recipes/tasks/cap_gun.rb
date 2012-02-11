@@ -9,7 +9,8 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
   # }
 
   # register email as a callback after restart
-  after "deploy:restart", "cap_gun:email"
+  after "deploy", "cap_gun:email"
+  after "deploy:migrations", "cap_gun:email"
 
   # Test everything out by running "cap cap_gun:email"
 end
