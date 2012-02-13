@@ -1,4 +1,5 @@
 require 'capistrano'
+require 'capistrano/cli'
 require 'capistrano-spec'
 
 module Capistrano::Spec::LoadTestRecipe

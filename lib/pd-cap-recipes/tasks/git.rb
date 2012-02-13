@@ -13,7 +13,9 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     end
   end
 
-  after  'deploy:symlink', 'git:update_tag_for_stage'
+  after "deploy:symlink", "git:update_tag_for_stage"
+  before "deploy", "git:validate_branch_is_tag"
+  before "deploy:migrations", "git:validate_branch_is_tag"
 
   namespace :git do
 
@@ -58,6 +60,15 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       # Set new pointer to current HEAD.
       git.tag({}, config[:stage])
       git.push(:tags => true)
+    end
+
+    task :validate_branch_is_tag do
+      # Make sure an external recipe is not overriding the branch variable by
+      # doing something like
+      # set :branch, :master
+      if config[:branch] != config[:_git_branch]
+        raise Capistrano::Error
+      end
     end
   end
 end
