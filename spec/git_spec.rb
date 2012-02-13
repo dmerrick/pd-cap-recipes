@@ -7,6 +7,11 @@ describe "Git sanity check", :recipe => true do
 
   describe 'branch check' do
     before(:each) do
+      # Some setup to get the sanity checks humming along
+      
+      # Create a test tag pointing to HEAD
+      `git tag -d test`
+      `git tag test`
       config.set :tag, 'test' 
       config.set :current_revision, '1'
     end

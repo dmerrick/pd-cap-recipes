@@ -67,7 +67,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       # doing something like
       # set :branch, :master
       if config[:branch] != config[:_git_branch]
-        raise Capistrano::Error("The current branch do not seems to match the cached version. Make sure you are not overriding it in your config by doing something like 'set :deploy, 'release''")
+        raise Capistrano::Error.new("The current branch do not seems to match the cached version. Make sure you are not overriding it in your config by doing something like 'set :deploy, 'release''")
       end
     end
   end
