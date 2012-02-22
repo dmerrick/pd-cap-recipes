@@ -31,6 +31,20 @@ module Capistrano::Spec::LoadTestRecipe
   end
 end
 
+module Capistrano::Spec::SetTag
+  def self.included(base)
+    base.before(:each) do 
+      # Some setup to get the sanity checks humming along
+      
+      # Create a test tag pointing to HEAD
+      
+      `git tag -d test`
+      `git tag test`
+      config.set :tag, 'test' 
+    end
+  end
+end
+
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
@@ -38,4 +52,5 @@ RSpec.configure do |config|
   config.include Capistrano::Spec::Matchers
   config.include Capistrano::Spec::Helpers
   config.include Capistrano::Spec::LoadTestRecipe, :recipe => :true
+  config.include Capistrano::Spec::SetTag, :tag => :true
 end

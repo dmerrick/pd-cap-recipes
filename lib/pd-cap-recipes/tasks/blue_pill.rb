@@ -58,7 +58,8 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     desc "Stop then start bluepill"
     task :rolling_stop_start, :roles => [:bg_task] do
       servers = find_servers_for_task(current_task)
-      partitions = servers.enum_slice((servers.size/3.0).ceil)
+      num_partitions = (servers.size/3.0).ceil
+      partitions = num_partitions > 0 ? servers.enum_slice(num_partitions) : []
       time_started = Time.now
       partitions.each do |hosts|
         bluepill_exec "stop", :hosts => hosts

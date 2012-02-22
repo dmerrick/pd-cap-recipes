@@ -1,12 +1,14 @@
+COMMENT_FILE = "/var/tmp/cap_message.txt"
+
 Capistrano::Configuration.instance(:must_exist).load do |config|
   # Make sure that there's a comment for this deploy
   set :comment do
     return config[:comment_value] if config[:comment_value]
 
-    file = "/var/tmp/cap_message.txt"
+    file = COMMENT_FILE 
     FileUtils.rm(file) if File.exists?(file)
     if no_comment?
-      prev = fetch(:current_revision)
+      prev = safe_current_revision
       cur = fetch(:branch)
       content = 
 """

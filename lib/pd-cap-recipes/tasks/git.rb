@@ -92,9 +92,9 @@ def git_sanity_check(tag)
   # See this article for info on how this works:
   # http://stackoverflow.com/questions/3005392/git-how-can-i-tell-if-one-commit-is-a-descendant-of-another-commit
   if ENV['REVERSE_DEPLOY_OK'].nil?
-    if git.merge_base({}, deploy_sha, current_revision).chomp != git.rev_parse({ :verify => true }, current_revision).chomp
+    if safe_current_revision && git.merge_base({}, deploy_sha, safe_current_revision).chomp != git.rev_parse({ :verify => true }, safe_current_revision).chomp
       unless continue_with_reverse_deploy(deploy_sha)
-        raise "You are trying to deploy #{deploy_sha}, which does not contain #{current_revision}," + \
+        raise "You are trying to deploy #{deploy_sha}, which does not contain #{safe_current_revision}," + \
             " the commit currently running.  Operation aborted for your safety." + \
             " Set REVERSE_DEPLOY_OK to override."
       end
@@ -103,7 +103,7 @@ def git_sanity_check(tag)
 end
 
 def continue_with_reverse_deploy(deploy_sha)
-  msg = "You are trying to deploy #{deploy_sha}, which does not contain #{current_revision}, the commit currently running. Are you sure you want to continue? #{green "[No|yes]"}"
+  msg = "You are trying to deploy #{deploy_sha}, which does not contain #{safe_current_revision}, the commit currently running. Are you sure you want to continue? #{green "[No|yes]"}"
   continue = Capistrano::CLI.ui.ask msg
   continue = continue.to_s.strip
   continue.downcase == 'yes'
@@ -111,4 +111,13 @@ end
 
 def green(s)
   "\e[1m\e[32m#{s}\e[0m" 
+end
+
+# current_revision will throw an exception if this is the first deploy...
+def safe_current_revision
+  begin
+    current_revision
+  rescue
+    nil
+  end
 end
