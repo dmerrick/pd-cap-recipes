@@ -71,53 +71,58 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       end
     end
   end
-end
 
-def git_sanity_check(tag)
-  repo = Grit::Repo.new('.')
-  git  = Grit::Git.new(File.join('.', '.git'))
+  def git_sanity_check(tag)
+    repo = Grit::Repo.new('.')
+    git  = Grit::Git.new(File.join('.', '.git'))
 
-  if repo.tags.select {|t| t.name == tag }.size == 0
-    raise "Invalid tag name: #{tag}" 
-  end
+    if repo.tags.select {|t| t.name == tag }.size == 0
+      raise "Invalid tag name: #{tag}" 
+    end
 
-  tag_sha = repo.commit(tag).id
-  deploy_sha = repo.head.commit.id
+    tag_sha = repo.commit(tag).id
+    deploy_sha = repo.head.commit.id
 
-  if tag_sha != deploy_sha
-    raise "Cannot deploy tag #{tag}. Does not match head SHA of #{deploy_sha}." + \
+    if tag_sha != deploy_sha
+      raise "Cannot deploy tag #{tag}. Does not match head SHA of #{deploy_sha}." + \
         " Please checkout the tag with: `git checkout #{tag}` and deploy again."
-  end
+    end
 
-  # See this article for info on how this works:
-  # http://stackoverflow.com/questions/3005392/git-how-can-i-tell-if-one-commit-is-a-descendant-of-another-commit
-  if ENV['REVERSE_DEPLOY_OK'].nil?
-    if safe_current_revision && git.merge_base({}, deploy_sha, safe_current_revision).chomp != git.rev_parse({ :verify => true }, safe_current_revision).chomp
-      unless continue_with_reverse_deploy(deploy_sha)
-        raise "You are trying to deploy #{deploy_sha}, which does not contain #{safe_current_revision}," + \
+    # See this article for info on how this works:
+    # http://stackoverflow.com/questions/3005392/git-how-can-i-tell-if-one-commit-is-a-descendant-of-another-commit
+    if ENV['REVERSE_DEPLOY_OK'].nil?
+      if safe_current_revision && git.merge_base({}, deploy_sha, safe_current_revision).chomp != git.rev_parse({ :verify => true }, safe_current_revision).chomp
+        unless continue_with_reverse_deploy(deploy_sha)
+          raise "You are trying to deploy #{deploy_sha}, which does not contain #{safe_current_revision}," + \
             " the commit currently running.  Operation aborted for your safety." + \
             " Set REVERSE_DEPLOY_OK to override."
+        end
       end
+    end
+  end
+
+  def continue_with_reverse_deploy(deploy_sha)
+    msg = "You are trying to deploy #{deploy_sha}, which does not contain #{safe_current_revision}, the commit currently running. Are you sure you want to continue? #{green "[No|yes]"}"
+    continue = Capistrano::CLI.ui.ask msg
+    continue = continue.to_s.strip
+    continue.downcase == 'yes'
+  end
+
+  def green(s)
+    "\e[1m\e[32m#{s}\e[0m" 
+  end
+
+  # current_revision will throw an exception if this is the first deploy...
+  def safe_current_revision
+    begin
+      current_revision
+    rescue => e
+      logger.info "*" * 80
+      logger.info "An exception as occured while fetching the current revision. This is to be expected if this is your first deploy to this machine. Othewise, something is broken :("
+      logger.info e.inspect
+      logger.info "*" * 80
+      nil
     end
   end
 end
 
-def continue_with_reverse_deploy(deploy_sha)
-  msg = "You are trying to deploy #{deploy_sha}, which does not contain #{safe_current_revision}, the commit currently running. Are you sure you want to continue? #{green "[No|yes]"}"
-  continue = Capistrano::CLI.ui.ask msg
-  continue = continue.to_s.strip
-  continue.downcase == 'yes'
-end
-
-def green(s)
-  "\e[1m\e[32m#{s}\e[0m" 
-end
-
-# current_revision will throw an exception if this is the first deploy...
-def safe_current_revision
-  begin
-    current_revision
-  rescue
-    nil
-  end
-end

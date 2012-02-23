@@ -31,7 +31,7 @@ describe "Git sanity check", :recipe => true do
 
     describe 'without a current revision' do
       before(:each) do
-        config.set :current_revision, lambda { raise 'Error' }
+        config.set :current_revision, lambda { raise 'Error like capistrano' }
       end
 
       it "should return the branch without exception" do
