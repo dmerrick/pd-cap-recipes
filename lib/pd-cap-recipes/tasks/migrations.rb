@@ -31,6 +31,6 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
   # bundle:install, but not on deploy:migrations. Capistrano does not seem to
   # offer a way of doing that, so we might be missing a script on the server
   # the first time this gets run.
-  after 'deploy', 'db:check_for_pending_migrations'
+  before 'deploy', 'db:check_for_pending_migrations'
 end
 

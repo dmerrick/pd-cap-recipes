@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe "Migration check", :recipe => true do
-  it "should run after deploy" do
-    after_callbacks_for_task('deploy').should include('db:check_for_pending_migrations')
+  it "should run before deploy" do
+    before_callbacks_for_task('deploy').should include('db:check_for_pending_migrations')
   end
 
-  it "should not run after deploy:migrations" do
-    after_callbacks_for_task('deploy:migrations').should_not include('db:check_for_pending_migrations')
+  it "should not run before deploy:migrations" do
+    before_callbacks_for_task('deploy:migrations').should_not include('db:check_for_pending_migrations')
   end
 
   describe "task execution" do
