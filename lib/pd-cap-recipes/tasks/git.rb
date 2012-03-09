@@ -101,11 +101,15 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     end
   end
 
-  def continue_with_reverse_deploy(deploy_sha)
-    msg = "You are trying to deploy #{deploy_sha}, which does not contain #{safe_current_revision}, the commit currently running. Are you sure you want to continue? #{green "[No|yes]"}"
+  def confirm(msg)
     continue = Capistrano::CLI.ui.ask msg
     continue = continue.to_s.strip
     continue.downcase == 'yes'
+  end
+
+  def continue_with_reverse_deploy(deploy_sha)
+    msg = "You are trying to deploy #{deploy_sha}, which does not contain #{safe_current_revision}, the commit currently running. Are you sure you want to continue? #{green "[No|yes]"}"
+    confirm msg
   end
 
   def green(s)

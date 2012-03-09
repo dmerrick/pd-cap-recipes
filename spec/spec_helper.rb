@@ -6,6 +6,8 @@ module Capistrano::Spec::LoadTestRecipe
   def load_test_recipe
     @configuration = Capistrano::Configuration.new
     @configuration.load :file => File.join(File.dirname(__FILE__), 'recipe.rb')
+    @configuration.load 'standard'
+    @configuration.load 'deploy'
     @configuration.extend(Capistrano::Spec::ConfigurationExtension)
   end
 
@@ -19,6 +21,7 @@ module Capistrano::Spec::LoadTestRecipe
 
   def callbacks_for_task(before_of_after, task_name)
     task = @configuration.find_task(task_name)
+    raise "Could not find task #{task_name}" unless task
     pending = Array(@configuration.callbacks[before_of_after]).select { |c| c.applies_to?(task) }
     pending.map(&:source)
   end
