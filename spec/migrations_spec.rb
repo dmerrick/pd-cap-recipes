@@ -14,7 +14,7 @@ describe "Migration check", :recipe => true do
 
     describe "with pending migrations" do
       before(:each) do
-        config.should_receive(:has_pending_migrations?) { true }
+        config.should_receive(:pending_migrations) { [1] }
       end
 
       it "should prompt to continue and continue on success" do
@@ -30,7 +30,7 @@ describe "Migration check", :recipe => true do
 
     describe "without pending migrations" do
       before(:each) do
-        config.should_receive(:has_pending_migrations?) { false }
+        config.should_receive(:pending_migrations) { [] }
       end
 
       it "should not prompt to continue and continue on success" do
@@ -40,19 +40,19 @@ describe "Migration check", :recipe => true do
     end
   end
 
-  describe "has_pending_migrations?" do
+  describe "pending_migrations" do
     before(:each) do
       config.should_receive(:server_migrations) { [1,2] }
     end
 
     it "should return true if local migrations exist that have not been runned on the server" do
       config.should_receive(:local_migrations) { [1,2,3] }
-      config.has_pending_migrations?.should be_true
+      config.pending_migrations.should == [3]
     end
 
     it "should return false if no local migrations exist that have not been runned on the server" do
       config.should_receive(:local_migrations) { [1,2] }
-      config.has_pending_migrations?.should be_false
+      config.pending_migrations.should == []
     end
   end
 end
