@@ -18,7 +18,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
   def server_migrations
     # || true to ignore errors as the pd_db_migrations script might not be there
     # for the first deploy
-    out = capture("cd #{current_path} && RAILS_ENV=#{stage} bundle exec pd_db_migrations || true")
+    out = capture("cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec pd_db_migrations || true")
     out.split("\n").map(&:strip)
   end
 

@@ -1,6 +1,6 @@
 def bundle_exec(cmd, options = {})
   options = options.clone
-  to_run = "sh -c \"cd #{current_path} && RAILS_ENV=#{stage} bundle exec #{cmd}\""
+  to_run = "sh -c \"cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec #{cmd}\""
   to_run << ' || true' if options.delete(:no_error)
   output = ""
   append_to_output = lambda do |channel, stream, data|
