@@ -6,22 +6,8 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
           desc "#{action} Nginx"
           task action.to_sym, :roles => role do
             # Use nohup because otherwise nginx dies when the connection is severed 
-            sudo "nohup /etc/init.d/nginx #{action}"
+            sudo "nohup sv #{action} nginx"
           end
-        end
-
-        desc 'Backup nginx config'
-        task :backup, :roles => role do
-          run "mkdir -p #{deploy_to}/backups"
-          run "cp /opt/nginx/conf/nginx.conf #{deploy_to}/backups/#{Time.now.strftime("%d%m%Y")}-nginx.conf.bak"
-        end
-
-        config_path = File.join(File.dirname(__FILE__), "..", "nginx_#{role}.conf")
-        desc "Update Nginx config with the local copy located at #{config_path}"
-        task :update_config, :roles => role do
-          tmp = '/tmp/nginx.conf'
-          upload config_path, tmp, :via => :scp
-          sudo "cp #{tmp} /opt/nginx/conf/nginx.conf"
         end
       end
     end
