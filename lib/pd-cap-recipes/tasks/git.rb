@@ -29,7 +29,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
 
       new_tag = "#{repo.head.name}-#{Time.now.utc.to_i}"
       git.tag({}, new_tag)
-      git.push(:tags => true)
+      git.push({}, 'origin', "refs/tags/#{new_tag}")
 
       Capistrano::CLI.ui.say "Your new tag is #{green new_tag}" 
       Capistrano::CLI.ui.say "You can deploy the tag by running:\n  bundle exec cap #{stage} deploy -s tag=#{new_tag}" 
@@ -59,7 +59,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
 
       # Set new pointer to current HEAD.
       git.tag({}, config[:stage])
-      git.push(:tags => true)
+      git.push({}, 'origin', "refs/tags/#{config[:stage]}")
     end
 
     task :validate_branch_is_tag do
