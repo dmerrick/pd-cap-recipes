@@ -15,12 +15,16 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     production?
   end
 
-  set :hipchat_message do 
-    message = "#{human} is deploying #{deployment_name} to #{env}"
+  set :hipchat_message do
+    message = "#{human} is deploying #{deployment_name} to #{stage}"
     message << " (with migrations)" if hipchat_with_migrations
     message << ".<br/>"
     message << comment 
     message
+  end
+
+  set :hipchat_finished_message do
+    message = "#{human} finished deploying #{deployment_name} to #{stage}."
   end
 
   def deployment_name
