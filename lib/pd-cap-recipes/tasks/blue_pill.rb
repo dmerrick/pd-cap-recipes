@@ -20,13 +20,10 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     task :rolling_stop_start, :roles => [:bg_task] do
       servers = find_servers_for_task(current_task)
       num_partitions = (servers.size/3.0).ceil
-      partitions = num_partitions > 0 ? servers.enum_slice(num_partitions) : []
+      partitions = num_partitions > 0 ? servers.each_slice(num_partitions) : []
       time_started = Time.now
       partitions.each do |hosts|
-        bluepill_exec "stop", :hosts => hosts
-        bluepill_exec "quit", :hosts => hosts
-        bluepill_exec "load #{bluepill_path}", :hosts => hosts, :no_error => false
-
+        restart_bluepill(hosts)
         # Wait for bluepill to start the workers
         while !rolling_timeout?(time_started) && !bluepill_started?(hosts)
           puts "Workers not started"
@@ -66,6 +63,12 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
 
   def bluepill_path
     File.join(current_path, 'config', 'bluepill.pill')
+  end
+
+  def restart_bluepill(hosts)
+    bluepill_exec "stop", :hosts => hosts
+    bluepill_exec "quit", :hosts => hosts
+    bluepill_exec "load #{bluepill_path}", :hosts => hosts, :no_error => false
   end
 
   def bluepill_started?(hosts)

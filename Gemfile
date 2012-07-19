@@ -6,7 +6,8 @@ source "http://rubygems.org"
 group :test, :development do
   gem 'rspec'
   gem 'guard-rspec'
-  gem 'ruby-debug'
+  gem 'ruby-debug', :platform => :ruby_18
+  gem 'debugger', :platform => :ruby_19
   gem 'mysql'
 end
 
