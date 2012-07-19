@@ -12,7 +12,8 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
           # sync assets
           server = find_servers_for_task(current_task).first
           asset_dir = "#{shared_path}/assets"
-          run "rsync -av #{asset_dir} #{asset_cdn_host}", :hosts => server
+          ssh_env = fetch(:ssh_env, "-e 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'")
+          run "rsync -av #{ssh_env} #{asset_dir} #{asset_cdn_host}", :hosts => server
         end
       end
 
