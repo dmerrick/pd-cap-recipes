@@ -33,7 +33,9 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       end
 
       def assets_dirty?
-        from = source.next_revision(current_revision)
+        r = safe_current_revision
+        return true if r.nil?
+        from = source.next_revision(r)
         asset_changing_files = ["vendor/assets/", "app/assets/", "lib/assets", "Gemfile", "Gemfile.lock"]
         asset_changing_files = asset_changing_files.select do |f|
           File.exists? f
