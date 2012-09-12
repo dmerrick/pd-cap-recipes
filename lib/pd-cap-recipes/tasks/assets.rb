@@ -7,7 +7,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
         Deploy the compiled assets to a CDN. RSync the shared directory to asset_cdn_host.
         This operation happens on a single host.
       DESC
-      task :cdn_deploy, :role => :web do
+      task :cdn_deploy, :roles => :web do
         unless fetch(:skip_cdn_deploy, false)
           # sync assets
           server = find_servers_for_task(current_task).first
