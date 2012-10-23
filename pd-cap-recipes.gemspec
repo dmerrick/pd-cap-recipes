@@ -18,6 +18,10 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  # specify any dependencies here; for example:
-  # s.add_development_dependency "rspec"
+  s.add_dependency "grit", ">= 2.5.0"
+  s.add_dependency "git", ">= 1.2.5"
+
+  # Also add these to your gem file
+  # gem 'cap_gun', :git => "git://github.com/ffmike/cap_gun.git"
+  # gem 'hipchat', :git => 'git://github.com/lkosewsk/hipchat.git'
 end
