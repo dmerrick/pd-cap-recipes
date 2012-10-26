@@ -13,7 +13,10 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     end
   end
 
-  after "deploy:symlink", "git:update_tag_for_stage"
+  # disabled because it tags in katama_deploy, and not in the project as intended
+  #after "deploy:symlink", "git:update_tag_for_stage"
+
+  # disabled because we dont (currently) deploy like this
   #before "deploy", "git:validate_branch_is_tag"
   #before "deploy:migrations", "git:validate_branch_is_tag"
 
