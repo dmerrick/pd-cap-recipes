@@ -1,5 +1,5 @@
 Capistrano::Configuration.instance(:must_exist).load do |config|
-  after 'deploy:assets:precompile', 'deploy:assets:cdn_deploy'
+  #after 'deploy:assets:precompile', 'deploy:assets:cdn_deploy'
 
   namespace :deploy do
     namespace :assets do

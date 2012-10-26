@@ -14,8 +14,8 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
   end
 
   after "deploy:symlink", "git:update_tag_for_stage"
-  before "deploy", "git:validate_branch_is_tag"
-  before "deploy:migrations", "git:validate_branch_is_tag"
+  #before "deploy", "git:validate_branch_is_tag"
+  #before "deploy:migrations", "git:validate_branch_is_tag"
 
   namespace :git do
 
