@@ -35,6 +35,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     end
   end
 
+  # the name that appears next to the message in hipchat
   def deploy_user
     fetch(:hipchat_deploy_user, "Deploy")
   end
