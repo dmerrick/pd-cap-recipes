@@ -32,38 +32,5 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       end
 
     end #namespace rails
-
-    namespace :bg_task do
-      desc "Download bg_task log"
-      task :fetch, :roles => :bg_task do
-        source = "#{shared_path}/log/bg_task/bg_task_runner.output"
-        dest = ENV['destination'] || File.join('log', 'deploy')
-        fetch_log source, dest
-      end
-
-      desc "Download day old bg_task log"
-      task :fetch_old, :roles => :bg_task do
-        source = "#{shared_path}/log/bg_task/bg_task_runner.output.1"
-        dest = ENV['destination'] || File.join('log', 'deploy')
-        fetch_log source, dest
-      end
-    end
-
-    namespace :db_queue do
-      desc "Download db_queue log"
-      task :fetch, :roles => :bg_task do
-        source = "#{shared_path}/log/db_queue_worker/db_queue_worker.output"
-        dest = ENV['destination'] || File.join('log', 'deploy')
-        fetch_log source, dest
-      end
-
-      desc "Download day old db queue log"
-      task :fetch_old, :roles => :bg_task do
-        source = "#{shared_path}/log/db_queue_worker/db_queue_worker.output.1"
-        dest = ENV['destination'] || File.join('log', 'deploy')
-        fetch_log source, dest
-      end
-    end
-
   end
 end
