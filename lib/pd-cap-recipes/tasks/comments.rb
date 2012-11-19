@@ -8,7 +8,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     file = COMMENT_FILE 
     FileUtils.rm(file) if File.exists?(file)
     if no_comment?
-      prev = safe_current_revision
+      prev = current_revision
       cur = fetch(:branch)
       content = 
 """
