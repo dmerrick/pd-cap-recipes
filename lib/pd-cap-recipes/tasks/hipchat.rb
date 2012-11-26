@@ -27,11 +27,11 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     message = "#{human} finished deploying #{deployment_name} to #{stage}."
   end
 
-  namespace :hipchat do
-    task :set_client do
-      set :hipchat_client, HipChat::Client.new(hipchat_token)
-    end
-  end
+  #namespace :hipchat do
+  #  task :set_client do
+  #    set :hipchat_client, HipChat::Client.new(hipchat_token)
+  #  end
+  #end
 
   def deployment_name
     if branch
