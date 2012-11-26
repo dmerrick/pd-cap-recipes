@@ -5,7 +5,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       logger.info "No comment provided. Provide one with '-S comment=\"comment here\"'"
     end
 
-    fetch(:comment).strip
+    fetch(:comment, "")
   end
 
   def no_comment?
