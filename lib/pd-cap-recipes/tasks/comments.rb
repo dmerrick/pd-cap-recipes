@@ -8,7 +8,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     file = COMMENT_FILE 
     FileUtils.rm(file) if File.exists?(file)
     if no_comment?
-      prev = current_revision
+      prev = safe_current_revision
       cur = fetch(:branch)
       content = 
 """
@@ -41,5 +41,18 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
 
   def clean_comment(comment)
     comment.split("\n").reject{|line| /^\s*#.*$/ === line}.reject{|line| line.strip == ""}.join("\n")
+  end
+
+  # current_revision will throw an exception if this is the first deploy...
+  def safe_current_revision
+    begin
+      current_revision
+    rescue => e
+      logger.info "*" * 80
+      logger.info "An exception as occured while fetching the current revision. This is to be expected if this is your first deploy to this machine. Othewise, something is broken :("
+      logger.info e.inspect
+      logger.info "*" * 80
+      nil
+    end
   end
 end

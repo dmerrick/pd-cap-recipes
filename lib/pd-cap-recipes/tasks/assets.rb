@@ -33,7 +33,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       end
 
       def assets_dirty?
-        r = current_revision
+        r = safe_current_revision
         return true if r.nil?
         from = source.next_revision(r)
         asset_changing_files = ["vendor/assets/", "app/assets/", "lib/assets", "Gemfile", "Gemfile.lock"]
@@ -41,6 +41,19 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
           File.exists? f
         end
         capture("cd #{latest_release} && #{source.local.log(current_revision, source.local.head)} #{asset_changing_files.join(" ")} | wc -l").to_i > 0
+      end
+
+      # current_revision will throw an exception if this is the first deploy...
+      def safe_current_revision
+        begin
+          current_revision
+        rescue => e
+          logger.info "*" * 80
+          logger.info "An exception as occured while fetching the current revision. This is to be expected if this is your first deploy to this machine. Othewise, something is broken :("
+          logger.info e.inspect
+          logger.info "*" * 80
+          nil
+        end
       end
     end
   end
