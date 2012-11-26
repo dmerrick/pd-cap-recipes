@@ -19,19 +19,13 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     message = "#{human} is deploying #{deployment_name} to #{stage}"
     message << " (with migrations)" if hipchat_with_migrations
     message << ".<br/>"
-    message << comment_text
+    message << comment_text unless comment_text == ""
     message
   end
 
   set :hipchat_finished_message do
     message = "#{human} finished deploying #{deployment_name} to #{stage}."
   end
-
-  #namespace :hipchat do
-  #  task :set_client do
-  #    set :hipchat_client, HipChat::Client.new(hipchat_token)
-  #  end
-  #end
 
   def deployment_name
     if branch
