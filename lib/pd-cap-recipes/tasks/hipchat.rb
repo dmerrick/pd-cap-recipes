@@ -19,7 +19,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     message = "#{human} is deploying #{deployment_name} to #{stage}"
     message << " (with migrations)" if hipchat_with_migrations
     message << ".<br/>"
-    message << comment 
+    message << comment_text
     message
   end
 
