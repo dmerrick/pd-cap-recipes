@@ -1,11 +1,5 @@
 require 'hipchat/capistrano'
 
-namespace :hipchat do
-  task :set_client do
-    set :hipchat_client, HipChat::Client.new(hipchat_token)
-  end
-end
-
 Capistrano::Configuration.instance(:must_exist).load do |config|
   # Set these in you deploy.rb file
   # set :hipchat_token, "??????????"
@@ -31,6 +25,12 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
 
   set :hipchat_finished_message do
     message = "#{human} finished deploying #{deployment_name} to #{stage}."
+  end
+
+  namespace :hipchat do
+    task :set_client do
+      set :hipchat_client, HipChat::Client.new(hipchat_token)
+    end
   end
 
   def deployment_name
